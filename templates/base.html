@@ -9,6 +9,13 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        var socket = io();
+        socket.on('connect', function() {
+            socket.emit('socket_init', {data: 'Socket Initialized'});
+        });
+    </script>
     <title>My Messenger</title>
   </head>
   <body>
@@ -17,6 +24,12 @@
         </div>
     </div>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-      <script src="{{ url_for('static', filename='custom.js')}}"></script>
+      <script>
+          socket.on('new_msg', function(msg){
+            alert(msg)
+            var newRow=document.getElementById('messages').insertRow();
+            newRow.innerHTML = "<td>"+msg["message"]+"</td>"+"<td>"+msg["sender"]+"</td>"+"<td>"+msg["dt"]+"</td>";
+          });
+      </script>
   </body>
 </html>

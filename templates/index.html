@@ -21,14 +21,24 @@
             <div class="col-md-8">
 
                 <h2>Messages</h2>
-                {% if messages %}
-                    {% for m in messages %}
-                        <p>"{{ m.message }}"</p>
-                        <p>{{ m.sender }} ({{ m.dt }})</p>
-                    {% endfor %}
-                {% else %}
-                    <p>No messages found.</p>
-                {% endif %}
+                <table id="messages">
+                    <tbody>
+                         {% if messages %}
+                            {% for m in messages %}
+                                <tr>
+                                    <td>"{{ m.message }}"</td>
+                                    <td>{{ m.sender }}</td>
+                                    <td>({{ m.dt }})</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                             <tr>
+                                <td>No messages found.</td>
+                             </tr>
+                        {% endif %}
+
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

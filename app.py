@@ -2,9 +2,11 @@ from flask import Flask, jsonify, make_response, redirect, render_template, requ
 import os
 import sqlite3
 import settings
+from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
 app.config.from_object(settings)
+socketio = SocketIO(app)
 
 if not os.path.exists(app.config['DATABASE']):
     try:
@@ -34,14 +36,26 @@ def _add_message(message, sender):
         return c.lastrowid
 
 
-def _get_message():
+# Helper functions
+def _get_message(id=None):
     """Return a list of message objects (as dicts)"""
     with sqlite3.connect(app.config['DATABASE']) as conn:
         c = conn.cursor()
-        q = "SELECT * FROM messages ORDER BY dt DESC"
-        rows = c.execute(q)
+
+        if id:
+            id = int(id)  # Ensure that we have a valid id value to query
+            q = "SELECT * FROM messages WHERE id=? ORDER BY dt DESC"
+            rows = c.execute(q, (id,))
+
+        else:
+            q = "SELECT * FROM messages ORDER BY dt DESC"
+            rows = c.execute(q)
 
         return [{'id': r[0], 'dt': r[1], 'message': r[2], 'sender': r[3]} for r in rows]
+
+@socketio.on('socket_init')
+def socket_init(message):
+    print('received message: ' + message['data'])
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -50,19 +64,21 @@ def home():
         return redirect(url_for('login'))
 
     if request.method == 'POST':
-        _add_message(request.form['message'], session['username'])
+        add_message(request.form['message'], session['username'])
         redirect(url_for('home'))
 
     return render_template('index.html', messages=_get_message(), user=session['username'])
 
 
-@app.route('/send', methods=['POST'])
-def add_message():
-    message = request.args['message']
-    sender = request.args['sender']  # if key doesn't exist, returns a 400, bad request error
+
+def add_message(message, sender):
+    # message = request.args['message']
+    # sender = request.args['sender']  # if key doesn't exist, returns a 400, bad request error
     # website = request.args.get('website') if key doesn't exist, returns None
 
-    _add_message(message, sender)
+    id = _add_message(message, sender)
+    if id:
+        emit('new_msg', _get_message(id)[0], namespace='/', broadcast=True)
     return make_response(jsonify({'success': True}), 200)
 
 
@@ -73,6 +89,10 @@ def get_messages():
         return make_response(jsonify({'error': 'Not found'}), 404)
 
     return jsonify({'messages': messages})
+
+
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -88,4 +108,4 @@ def login():
 
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app)
