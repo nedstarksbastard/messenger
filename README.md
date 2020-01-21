@@ -50,7 +50,7 @@ have skipped that for simplicity's sake
 - I like minimal styling so have not strayed much beyond bootstrap's default but did add a few touches. The app best 
 runs on Chrome
 
-#### Walkaround
+#### Walkthrough
 
 The application will start on http://127.0.0.1:8000/ and ask for a username and password. **Enter any name and `123`
 for password** (This can be changed in settings.py). The application will then redirect to the chatroom where you will
