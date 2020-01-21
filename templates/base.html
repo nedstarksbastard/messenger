@@ -7,12 +7,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" integrity="sha256-bQmrZe4yPnQrLTY+1gYylfNMBuGfnT/HKsCGX+9Xuqo=" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf-8">
         var socket = io();
         socket.on('connect', function() {
+            console.log("Socket Initialized");
             socket.emit('socket_init', {data: 'Socket Initialized'});
         });
     </script>
@@ -22,13 +23,11 @@
       <div class="container" id="app">
            {% block content %}  {% endblock %}
         </div>
-    </div>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
       <script>
           socket.on('new_msg', function(msg){
-            alert(msg)
             var newRow=document.getElementById('messages').insertRow();
-            newRow.innerHTML = "<td>"+msg["message"]+"</td>"+"<td>"+msg["sender"]+"</td>"+"<td>"+msg["dt"]+"</td>";
+            newRow.innerHTML = "<td><b>"+msg["sender"]+"</b></td>"+"<td>("+msg["dt"]+")</td>"+"<td><em>\""+msg["message"]+"\"</em></td>";
           });
       </script>
   </body>

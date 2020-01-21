@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+
+    messenger:
+        build: .
+        command: flask run --host=0.0.0.0 --port=8000
+        ports:
+            - 8000:8000
+        environment:
+            - FLASK_APP=app.py
+            - FLASK_ENV=production
+            - FLASK_DEBUG=0
+            - PYTHONUNBUFFERED=1
+
