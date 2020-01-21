@@ -52,8 +52,8 @@ runs on Chrome
 
 #### Walkaround
 
-The application will start on http://127.0.0.1:8000/ and ask for a username and password. Enter any name and `**123**`
-for password (This can be changed in settings.py). The application will then redirect to the chatroom where you will
+The application will start on http://127.0.0.1:8000/ and ask for a username and password. **Enter any name and `123`
+for password** (This can be changed in settings.py). The application will then redirect to the chatroom where you will
 see all the messages in the database and a form to send messages. Multiple people can log onto the app and send messages
 which will then show up on all the pages in real-time due to the use of sockets. Please use incognito windows to start
 up different sessions. In order to logout simply close the browser or hit refresh. The server clears up the session when
